@@ -1,0 +1,35 @@
+[ ] ! how to filter out 3 char chatting? !
+  possibly preface answers with : or a ,
+[ ] consider progressive scoring or variable score based on set disimilarity
+[x] get rid of directed replies ('benji: Game over!' becomes 'Game over!')
+[ ] vfound/vunfound should only display 3 or 4 per row?
+[ ] find ctrl chars for hard cards!
+[x] disallow not implemented modes
+
+[x] lock down commands:
+    @sets, @done, @found, @redraw?, @showfound?, @score?
+
+[ ] two add'l modes:
+    [ ] only allow one (multi) guess from each player
+        [ ] restrict guessing to private msgs? how?
+        [ ] no 'found' list/command
+        [ ] don't remove from sets list - each player gets the same shot at the board
+        [ ] bonus points for get all in one shot?
+        [ ] is time a factor? probably don't need to be threaded, just timestamp math
+    [ ] draw new cards when a player finds a set
+        [ ] allow only single guesses?
+        [ ] what about timing issues where player guesses right after new cards are drawn?
+        [ ] no 'found' list
+        [ ] have to find all new sets, but why? just call isASet when player guesses
+        [ ] play to some number, like 10?
+
+[x] handle: '@show rem' correctly - right now the 3 char regex gives a -2
+[ ] do we need a vall?
+[x] handle boards with no sets
+[x] change default to use guide, getopt should now be --noguide
+[x] change default to use lefty (try a righty)
+[/] allow getopts without class, ie @sets --hard --split
+
+[ ] persistent scoring?
+[ ] allow multiple/simultaneous games?
+
