@@ -78,7 +78,7 @@ class Sets(callbacks.Plugin):
         PATTERN. The goal is to match three cards where the attributes of each
         card are either all the same, or all different: [ x ][o o][###]
         all have the same COLOR, but different SHAPES and a different NUMBER of shapes.
-        Guess three card groupings separated by comma or space: <ben> sdf,wer xer 
+        Guess three card letters: <ben> sdf
         """
         # start the game
         if self.gameIsRunning():
@@ -149,7 +149,7 @@ class Sets(callbacks.Plugin):
         if self.gameIsRunning():
             rawGuesses = msg.args[1]
             # TODO: use 'keymap' and fail the match if anything doesn't match
-            guesses = re.findall( r"\b([qwerasdfzxcv]{3}\b)", rawGuesses )
+            guesses = re.findall( r"^([qwerasdfzxcv]{3})$", rawGuesses )
             self.game.answer( guesses, msg.nick )
 
 
