@@ -1,3 +1,6 @@
+[ ] a --verbose mode
+  mike: wef[ x ][x x][xxx] good for +1 point, 0 total.   (1 Set remaining)
+  mike: des[ o ][o o][o o] wrong for -2 points, -1 total.   (failed: number, color)
 [ ] ! how to filter out 3 char chatting? !
   possibly preface answers with : or a ,
 [ ] consider progressive scoring or variable score based on set disimilarity

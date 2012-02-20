@@ -420,14 +420,14 @@ class Sets(callbacks.Plugin):
                 # returns a textual representation of the card
                 #   (contains irc color control characters)
                 def displayText(self):
-                    s = WHITE + '[' + self.pattern + self.color;
+                    s = '[' + self.pattern + self.color;
                     if self.number == 1:
                         s += ' ' + self.shape + ' ';
                     elif self.number == 2:
                         s += self.shape + ' ' + self.shape;
                     else:
                         s += self.shape * 3
-                    s += self.RESET + WHITE + ']'
+                    s += self.RESET + ']'
                     return s
 
             # }}} end Card
