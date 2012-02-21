@@ -1,3 +1,13 @@
+[x] redo scoring.
+  is -2 too harsh? hard to recover from.
+  thinking sliding scale for correct anwsers:
+    first 50% = +1
+    next 30% = +2
+    next 20% = +3
+    last one = +5
+
+    so 6 sets would score:
+      1,1,1,2,3,5
 [ ] a --verbose mode
   mike: wef[ x ][x x][xxx] good for +1 point, 0 total.   (1 Set remaining)
   mike: des[ o ][o o][o o] wrong for -2 points, -1 total.   (failed: number, color)

@@ -100,7 +100,6 @@ class Sets(callbacks.Plugin):
 
         Stop the game and display remaining Sets."""
         if self.gameIsRunning():
-            irc.reply( "Quitter." )
             self.game.gameOver()
         else:
             irc.reply( "No game found... Use '@sets' to start one." )
@@ -305,6 +304,9 @@ class Sets(callbacks.Plugin):
                     self.cards.append( c )
                 self.sets = self.findSets()
 
+                self.setCount = 0
+                self.totalNumSets = len(self.sets)
+
             # returns a list of tuples that represents all the Sets in the Board.
             def findSets(self):
                 result = []
@@ -327,7 +329,8 @@ class Sets(callbacks.Plugin):
                         self.sets.remove( sortedGuess )
                         self.foundSets.append( sortedGuess )
                         good += 1
-                        scoreDelta += 1
+                        self.setCount += 1
+                        scoreDelta += round( ( (self.setCount*2.5) / self.totalNumSets ) + ((self.setCount==self.totalNumSets)/2) ) + 1
                     except:
                         # not in the notFound sets
                         try:
