@@ -295,7 +295,6 @@ class Sets(callbacks.Plugin):
         class Board:
             def __init__(self, level):
                 self.level = level
-                self.cards = []
                 self.sets = []
                 self.foundSets = []
                 self.keymap = [ 'q','w','e','r',
@@ -303,10 +302,12 @@ class Sets(callbacks.Plugin):
                                 'z','x','c','v' ]
 
                 # draw cards and find all sets
-                for i in range(NUM_CARDS):
-                    c = self.Card(self.level)
-                    self.cards.append( c )
-                self.sets = self.findSets()
+                while not self.sets:
+                    self.cards = []
+                    for i in range(NUM_CARDS):
+                        c = self.Card(self.level)
+                        self.cards.append( c )
+                    self.sets = self.findSets()
 
                 self.setCount = 0
                 self.totalNumSets = len(self.sets)
