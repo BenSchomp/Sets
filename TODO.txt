@@ -1,3 +1,5 @@
+
+[ ] allow multiple guess via : or @found
 [x] redo scoring.
   is -2 too harsh? hard to recover from.
   thinking sliding scale for correct anwsers:

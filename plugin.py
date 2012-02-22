@@ -78,7 +78,8 @@ class Sets(callbacks.Plugin):
         PATTERN. The goal is to match three cards where the attributes of each
         card are either all the same, or all different: [ x ][o o][###]
         all have the same COLOR, but different SHAPES and a different NUMBER of shapes.
-        Guess three card letters: <ben> sdf
+        Guess three card letters: sdf
+        (Preceed multiple guesses with : or ,)
         """
         # start the game
         if self.gameIsRunning():
@@ -148,7 +149,10 @@ class Sets(callbacks.Plugin):
         if self.gameIsRunning():
             rawGuesses = msg.args[1]
             # TODO: use 'keymap' and fail the match if anything doesn't match
-            guesses = re.findall( r"^([qwerasdfzxcv]{3})$", rawGuesses )
+            if rawGuesses[0] == ':' or rawGuesses[0] == ',':
+                guesses = re.findall( r"\b([qwerasdfzxcv]{3})\b", rawGuesses )
+            else:
+                guesses = re.findall( r"^([qwerasdfzxcv]{3})$", rawGuesses )
             self.game.answer( guesses, msg.nick )
 
 
@@ -330,7 +334,8 @@ class Sets(callbacks.Plugin):
                         self.foundSets.append( sortedGuess )
                         good += 1
                         self.setCount += 1
-                        scoreDelta += round( ( (self.setCount*2.5) / self.totalNumSets ) + ((self.setCount==self.totalNumSets)/2) ) + 1
+                        scoreDelta += int( round( ( (self.setCount*2.5) / self.totalNumSets ) +
+                                           ((self.setCount==self.totalNumSets)/2) ) + 1 )
                     except:
                         # not in the notFound sets
                         try:
