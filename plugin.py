@@ -250,9 +250,10 @@ class Sets(callbacks.Plugin):
         def answerResponse(self, name, found, missed, dups, scoreDelta, score):
             remainingText = ''
             itemizedText = []
-            if found > 0:
+            if len( found ) > 0:
                 notFound = self.notFoundSetsCount()
-                itemizedText.append( str(found) + " right" )
+                #itemizedText.append( str(found) + " right" )
+                itemizedText.append( self.board.setsText( found, verbose=True ) )
                 if notFound == 0:
                     remainingText = "   (Game Over)"
                 else:
@@ -282,7 +283,7 @@ class Sets(callbacks.Plugin):
                 self.scores[name] += scoreDelta
                 self.reply( self.answerResponse( name, found, missed, dups, scoreDelta, self.scores[name] ) )
 
-                if found > 0:
+                if len( found ) > 0:
                     if self.notFoundSetsExist():
                         if missed > 0 or dups > 0:
                             # show found sets to help clarify bad guesses
@@ -325,15 +326,17 @@ class Sets(callbacks.Plugin):
                 return result
 
             # scans the guesses for sets and returns the score for these guesses
+            #  (the number correct is the size of the good list)
             def checkAnswer(self, guesses):
-                good = bad = dup = scoreDelta = 0
+                good = []
+                bad = dup = scoreDelta = 0
                 for guess in guesses:
                     # sets are sorted when they're stored
                     sortedGuess = ''.join( sorted( guess ) )
                     try:
                         self.sets.remove( sortedGuess )
                         self.foundSets.append( sortedGuess )
-                        good += 1
+                        good.append( guess )
                         self.setCount += 1
                         scoreDelta += int( round( ( (self.setCount*2.5) / self.totalNumSets ) +
                                            ((self.setCount==self.totalNumSets)/2) ) + 1 )
@@ -365,11 +368,11 @@ class Sets(callbacks.Plugin):
                 if verbose:
                     verboseText = []
                     for s in sets:
-                        verboseText.append( '{0}{1}{2}{3}{4}{5}'.format(
+                        verboseText.append( '{0}{1}{2}[{3}|{4}|{5}]'.format(
                             s[0], s[1], s[2],
-                            self.cards[self.keymap.index(s[0])].displayText(), 
-                            self.cards[self.keymap.index(s[1])].displayText(),
-                            self.cards[self.keymap.index(s[2])].displayText() ) )
+                            self.cards[self.keymap.index(s[0])].displayText(minimal=True), 
+                            self.cards[self.keymap.index(s[1])].displayText(minimal=True),
+                            self.cards[self.keymap.index(s[2])].displayText(minimal=True) ) )
                     text = ', '.join( verboseText )
                 else:
                     text = ', '.join( sets )
@@ -428,16 +431,19 @@ class Sets(callbacks.Plugin):
 
                 # returns a textual representation of the card
                 #   (contains irc color control characters)
-                def displayText(self):
-                    s = '[' + self.pattern + self.color;
-                    if self.number == 1:
-                        s += ' ' + self.shape + ' ';
-                    elif self.number == 2:
-                        s += self.shape + ' ' + self.shape;
-                    else:
-                        s += self.shape * 3
-                    s += self.RESET + ']'
-                    return s
+                def displayText(self, minimal=False):
+                    if minimal:
+                        return self.pattern + self.color + (self.shape * self.number) + self.RESET
+                    else: 
+                        s = '[' + self.pattern + self.color;
+                        if self.number == 1:
+                            s += ' ' + self.shape + ' ';
+                        elif self.number == 2:
+                            s += self.shape + ' ' + self.shape;
+                        else:
+                            s += self.shape * 3
+                        s += self.RESET + ']'
+                        return s
 
             # }}} end Card
 
