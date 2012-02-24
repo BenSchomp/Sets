@@ -228,6 +228,7 @@ class Sets(callbacks.Plugin):
         # stops the game
         def gameOver(self):
             self.isRunning = False
+            self.reply( "-- Game Over --" )
             if self.notFoundSetsExist():
                 self.displayNotFoundSets( verbose = self.notFoundSetsCount() <= 3 )
             self.displayScores()
@@ -250,17 +251,14 @@ class Sets(callbacks.Plugin):
         def answerResponse(self, name, found, missed, dups, scoreDelta, score):
             remainingText = ''
             itemizedText = []
-            if len( found ) > 0:
+            if found:
                 notFound = self.notFoundSetsCount()
-                #itemizedText.append( str(found) + " right" )
                 itemizedText.append( self.board.setsText( found, verbose=True ) )
-                if notFound == 0:
-                    remainingText = "   (Game Over)"
-                else:
+                if notFound > 0:
                     setText = ' Set'
                     if notFound != 1:
                         setText += 's'
-                    remainingText = "   (" + str(notFound) + setText + " remaining)"
+                    remainingText = " (" + str(notFound) + setText + " remaining)"
 
             if missed > 0:
                 itemizedText.append( str(missed) + " wrong" )
@@ -283,7 +281,7 @@ class Sets(callbacks.Plugin):
                 self.scores[name] += scoreDelta
                 self.reply( self.answerResponse( name, found, missed, dups, scoreDelta, self.scores[name] ) )
 
-                if len( found ) > 0:
+                if found:
                     if self.notFoundSetsExist():
                         if missed > 0 or dups > 0:
                             # show found sets to help clarify bad guesses
