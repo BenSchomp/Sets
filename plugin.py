@@ -51,9 +51,10 @@ class Sets(callbacks.Plugin):
     CARDS_PER_ROW = 4
 
     # level constants
-    global NORMAL, HARD
+    global NORMAL, HARD, MONOCHROME
     NORMAL = 'normal'
     HARD = 'hard'
+    MONOCHROME = 'monochrome'
 
     # color constants
     global WHITE, GREEN, RED, YELLOW, LGRAY
@@ -72,9 +73,9 @@ class Sets(callbacks.Plugin):
     def sets( self, irc, msg, args, channel, level ):
         """[level]
 
-        Start a game of Sets! Level: {normal*|hard}.
+        Start a game of Sets! Level: {normal|hard|monochrome}.
         Each card has up to four 'attributes': SHAPE, NUMBER, COLOR, and
-        PATTERN. The goal is to match three cards where the attributes of each
+        PATTERN. Match three cards where the attributes of each
         card are either all the same, or all different: [ x ][o o][###]
         all have the same COLOR, but different SHAPES and a different NUMBER of shapes.
         Guess three card letters: sdf
@@ -92,7 +93,7 @@ class Sets(callbacks.Plugin):
                 self.game.displayRemainingCount()
             else:
                 irc.reply( "A board with no Sets was dealt. Aborting..." )
-    sets = wrap( sets, [ 'channel', optional( ('literal', [NORMAL, HARD] ), NORMAL ) ] )
+    sets = wrap( sets, [ 'channel', optional( ('literal', [NORMAL, HARD, MONOCHROME] ), NORMAL ) ] )
     
     # stop the game
     def giveup( self, irc, msg, args ):
@@ -301,14 +302,13 @@ class Sets(callbacks.Plugin):
                 while not self.sets:
                     self.cards = []
                     for i in range(NUM_CARDS):
-                        duplicate = True
-                        while duplicate:
+                        while True:
                             c = self.Card(self.level)
                             try:
                                 self.cards.index( c )
-                                duplicate = True
+                                # c is a duplicate, keep trying
                             except:
-                                duplicate = False
+                                break;
                         self.cards.append( c )
                     self.sets = self.findSets()
 
@@ -420,9 +420,13 @@ class Sets(callbacks.Plugin):
                     self.rng.seed()
                     self.shape = self.rng.choice( ['x', 'o', '#'] )
                     self.number = self.rng.randint(1,3)
-                    self.color = self.rng.choice( [RED, GREEN, YELLOW ] )
 
-                    if level == HARD:
+                    if level == MONOCHROME:
+                        self.color = WHITE
+                    else:
+                        self.color = self.rng.choice( [RED, GREEN, YELLOW ] )
+
+                    if level == HARD or level == MONOCHROME:
                         self.pattern = self.rng.choice( [self.PLAIN, self.ULINE, self.REVERSE] )
                     else:
                         self.pattern = self.PLAIN
