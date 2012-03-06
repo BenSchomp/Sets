@@ -51,9 +51,8 @@ class Sets(callbacks.Plugin):
     CARDS_PER_ROW = 4
 
     # level constants
-    global EASY, MEDIUM, HARD
-    EASY = 'easy'
-    MEDIUM = 'medium'
+    global NORMAL, HARD
+    NORMAL = 'normal'
     HARD = 'hard'
 
     # color constants
@@ -73,7 +72,7 @@ class Sets(callbacks.Plugin):
     def sets( self, irc, msg, args, channel, level ):
         """[level]
 
-        Start a game of Sets! Level: {easy|medium*|hard}.
+        Start a game of Sets! Level: {normal*|hard}.
         Each card has up to four 'attributes': SHAPE, NUMBER, COLOR, and
         PATTERN. The goal is to match three cards where the attributes of each
         card are either all the same, or all different: [ x ][o o][###]
@@ -93,7 +92,7 @@ class Sets(callbacks.Plugin):
                 self.game.displayRemainingCount()
             else:
                 irc.reply( "A board with no Sets was dealt. Aborting..." )
-    sets = wrap( sets, [ 'channel', optional( ('literal', [EASY, MEDIUM, HARD] ), MEDIUM ) ] )
+    sets = wrap( sets, [ 'channel', optional( ('literal', [NORMAL, HARD] ), NORMAL ) ] )
     
     # stop the game
     def giveup( self, irc, msg, args ):
@@ -166,9 +165,7 @@ class Sets(callbacks.Plugin):
             self.isRunning = False
 
             levelText = ''
-            if level == EASY:
-                levelText = 'n easy'
-            elif level == HARD:
+            if level == HARD:
                 levelText = ' hard'
 
             # start the game and init the board
@@ -304,7 +301,14 @@ class Sets(callbacks.Plugin):
                 while not self.sets:
                     self.cards = []
                     for i in range(NUM_CARDS):
-                        c = self.Card(self.level)
+                        duplicate = True
+                        while duplicate:
+                            c = self.Card(self.level)
+                            try:
+                                self.cards.index( c )
+                                duplicate = True
+                            except:
+                                duplicate = False
                         self.cards.append( c )
                     self.sets = self.findSets()
 
@@ -393,11 +397,11 @@ class Sets(callbacks.Plugin):
             def isASet(self, card1, card2, card3):
                 result = self.allSameOrDifferent(card1.shape, card2.shape, card3.shape)
                 result &= self.allSameOrDifferent(card1.number, card2.number, card3.number)
-                if self.level == EASY or not result: # easy or we failed shape/number checks
+                if not result: # we failed shape/number checks
                     return result
 
                 result = self.allSameOrDifferent(card1.color, card2.color, card3.color)
-                if self.level == MEDIUM or not result: # med or we failed color check
+                if self.level == NORMAL or not result: # normal or we failed color check
                     return result
 
                 result = self.allSameOrDifferent(card1.pattern, card2.pattern, card3.pattern)
@@ -416,16 +420,22 @@ class Sets(callbacks.Plugin):
                     self.rng.seed()
                     self.shape = self.rng.choice( ['x', 'o', '#'] )
                     self.number = self.rng.randint(1,3)
-
-                    if level == MEDIUM or level == HARD:
-                        self.color = self.rng.choice( [RED, GREEN, YELLOW ] )
-                    else:
-                        self.color = YELLOW
+                    self.color = self.rng.choice( [RED, GREEN, YELLOW ] )
 
                     if level == HARD:
                         self.pattern = self.rng.choice( [self.PLAIN, self.ULINE, self.REVERSE] )
                     else:
                         self.pattern = self.PLAIN
+
+                def __ne__(self, other):
+                    return (self.shape != other.shape or
+                        self.number != other.number or
+                        self.color != other.color or
+                        self.pattern != other.pattern)
+
+                def __eq__(self, other):
+                    return not self.__ne__(other)
+
 
                 # returns a textual representation of the card
                 #   (contains irc color control characters)
