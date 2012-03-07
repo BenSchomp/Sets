@@ -246,7 +246,7 @@ class Sets(callbacks.Plugin):
             return color + ' ' + sign + str(points) + LGRAY
 
         # builds the response to a player's guess
-        def answerResponse(self, name, found, missed, dups, scoreDelta, score):
+        def answerResponse(self, name, found, missed, dups, invalid, scoreDelta, score):
             remainingText = ''
             itemizedText = []
             if found:
@@ -262,6 +262,8 @@ class Sets(callbacks.Plugin):
                 itemizedText.append( str(missed) + " wrong" )
             if dups >  0:
                 itemizedText.append( "{0} dup{1}".format( dups, '' if dups == 1 else 's' ) )
+            if invalid > 0:
+                itemizedText.append( str(invalid) + " invalid" )
 
             pointsText = "{0} point{1}".format(
                     self.formatPoints( scoreDelta, plus=True ), '' if scoreDelta == 1 else 's' )
@@ -272,12 +274,12 @@ class Sets(callbacks.Plugin):
         # check guesses for sets
         def answer(self, guesses, name ):
             if guesses:
-                ( found, missed, dups, scoreDelta ) = self.board.checkAnswer( guesses )
+                ( found, missed, dups, invalid, scoreDelta ) = self.board.checkAnswer( guesses )
 
                 if not name in self.scores:
                     self.scores[name] = 0
                 self.scores[name] += scoreDelta
-                self.reply( self.answerResponse( name, found, missed, dups, scoreDelta, self.scores[name] ) )
+                self.reply( self.answerResponse( name, found, missed, dups, invalid, scoreDelta, self.scores[name] ) )
 
                 if found:
                     if self.notFoundSetsExist():
@@ -331,10 +333,13 @@ class Sets(callbacks.Plugin):
             #  (the number correct is the size of the good list)
             def checkAnswer(self, guesses):
                 good = []
-                bad = dup = scoreDelta = 0
+                bad = dup = invalid = scoreDelta = 0
                 for guess in guesses:
                     # sets are sorted when they're stored
                     sortedGuess = ''.join( sorted( guess ) )
+                    if sortedGuess[0] == sortedGuess[1] or sortedGuess[1] == sortedGuess[2]:
+                        invalid += 1
+                        continue
                     try:
                         self.sets.remove( sortedGuess )
                         self.foundSets.append( sortedGuess )
@@ -352,7 +357,7 @@ class Sets(callbacks.Plugin):
                             # not in the found sets either
                             bad += 1
                             scoreDelta -= 2
-                return (good, bad, dup, scoreDelta)
+                return (good, bad, dup, invalid, scoreDelta)
 
             # returns a list of the Board's display text (one Card per element)
             def displayText(self):
@@ -422,7 +427,7 @@ class Sets(callbacks.Plugin):
                     self.number = self.rng.randint(1,3)
 
                     if level == MONOCHROME:
-                        self.color = WHITE
+                        self.color = LGRAY
                     else:
                         self.color = self.rng.choice( [RED, GREEN, YELLOW ] )
 
