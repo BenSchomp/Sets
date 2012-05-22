@@ -258,11 +258,13 @@ class Sets(callbacks.Plugin):
                         setText += 's'
                     remainingText = " (" + str(notFound) + setText + " remaining)"
 
-            if missed > 0:
+            if missed:
                 itemizedText.append( str(missed) + " wrong" )
-            if dups >  0:
+
+            if dups:
                 itemizedText.append( "{0} dup{1}".format( dups, '' if dups == 1 else 's' ) )
-            if invalid > 0:
+
+            if invalid:
                 itemizedText.append( str(invalid) + " invalid" )
 
             pointsText = "{0} point{1}".format(
@@ -281,13 +283,8 @@ class Sets(callbacks.Plugin):
                 self.scores[name] += scoreDelta
                 self.reply( self.answerResponse( name, found, missed, dups, invalid, scoreDelta, self.scores[name] ) )
 
-                if found:
-                    if self.notFoundSetsExist():
-                        if missed > 0 or dups > 0:
-                            # show found sets to help clarify bad guesses
-                            self.displayFoundSets()
-                    else:
-                        self.gameOver()
+                if found and not self.notFoundSetsExist():
+                    self.gameOver()
 
 
         ## Board: represent the playing board which contains Cards does all calulations ## {{{

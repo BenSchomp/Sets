@@ -1,5 +1,14 @@
 
-[ ] allow multiple guess via : or @found
+[ ] no @show or @giveup
+  + everything should be off of: @sets
+    @sets found
+    @sets stop
+    etc.
+[ ] nice github readme, link to it in help
+[ ] allow dupes for an 'easy' mode again
+[ ] create scoring variations (even, progressive, or per set difference)
+
+[x] allow multiple guess via : or @found
 [x] redo scoring.
   is -2 too harsh? hard to recover from.
   thinking sliding scale for correct anwsers:
@@ -47,4 +56,57 @@
 
 [ ] persistent scoring?
 [ ] allow multiple/simultaneous games?
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+[ ] word warp
+  <benji> @wordwarp
+  <zorn> Starting a game of WordWarp:
+  <zorn> 5x3 / 4x4 / 2x5 / 1x6
+  <zorn> O V D E T U
+  <benji> duet dove
+  <zorn> benji: duet, dove = +4 points, 12 total (5/2/2/1)
+  <jake> due
+  <zorn> jake: due = +1 point, 3 total (4/2/2/1)
+
+  + http://stackoverflow.com/questions/772922/free-word-list-for-use-programatically
+
+[ ] word transform - change one letter each step
+  <zorn> MOON -> WOLF
+  <benji> good, goof, golf, wolf
+  <zorn> benji: found an optimal solution! (+4)
+
+[ ] games magazine - remove one letter each step
+  <zorn> DEVOUT -> DOE
+  <benji> voted toed
+  <zorn> got it!
+  
+
+wordtwist:
+  3x3: DOG > --- > --- > CAT
+  3x4: PAY > --- > --- > --- > FEE
+  3x5: DRY > --- > --- > --- > --- > WIT
+
+  4x4: HALF to PINT
+  4x5: EASY to TIME
+  4x6: HARD to TEST
+  4x7: PEEL to SKIN
+
+  5x7: HEAVY to BOXES
+  5x8: SHINY to FACES
+
+
+wordmash:
+  no rearranging letters 
+  in step 2, no forms of the given word are allowed
+  start : remove a letter : add a letter : change a letter
+  BIDE : --- : ---- : ----  =  BID : BRIDE : RIDE / BITE
+  SINK : --- : ---- : ----  =  SIN / INK : STINK / SLINK : PINK / SING
+
+doozit:
+  BACON : TEACH : CHAMP : STAKE : SHIED
+  baron : reach : cramp : stare : shred = c t h k i : thick > trick
+
+  SPINS : CRIMP : LEVER : STAIN : SLICK
+  spine : crime : levee : stein : slice = s p r a k : spark > spare / parks > pares
 
